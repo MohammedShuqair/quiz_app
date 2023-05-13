@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quize/controller/question_provider.dart';
 
+import 'colors.dart';
+
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     super.key, required this.onTap, required this.title,  this.padding,
@@ -40,7 +42,7 @@ showAlertDialog(BuildContext context,int id) {
         child: const Text("Delete"),
         onPressed: () {
           Provider.of<QuestionProvider>(context,listen: false).deleteFromDatabase(id);
-          // perform delete operation here
+          showSnackBar(context, message:'Question deleted successfully (:' );
           Navigator.of(context).pop();
         },
       ),
@@ -53,5 +55,18 @@ showAlertDialog(BuildContext context,int id) {
     builder: (BuildContext context) {
       return alert;
     },
+  );
+}
+
+void showSnackBar(BuildContext context,
+    {required String message, bool error = false}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+
+      content: Text(message,style: const TextStyle(color: AppColor.background),),
+      backgroundColor: error ? Colors.red : Colors.black,
+      duration: const Duration(seconds: 2),
+      dismissDirection: DismissDirection.horizontal,
+    ),
   );
 }
