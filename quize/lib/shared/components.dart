@@ -64,7 +64,7 @@ void showSnackBar(BuildContext context,
     SnackBar(
 
       content: Text(message,style: const TextStyle(color: AppColor.background),),
-      backgroundColor: error ? Colors.red : Colors.black,
+      backgroundColor: error ? Colors.red : Colors.green,
       duration: const Duration(seconds: 2),
       dismissDirection: DismissDirection.horizontal,
     ),
