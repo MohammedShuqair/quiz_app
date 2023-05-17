@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:quize/controller/database/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../model/question.dart';
