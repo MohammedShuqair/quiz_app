@@ -9,20 +9,25 @@ import 'package:quize/widgets/result_body.dart';
 import '../widgets/less_five.dart';
 
 class StartQuiz extends StatefulWidget {
-  const StartQuiz({Key? key,}) : super(key: key);
-
+  const StartQuiz({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<StartQuiz> createState() => _StartQuizState();
 }
 
 class _StartQuizState extends State<StartQuiz> {
+  late PageController _controller;
   @override
   void initState() {
+    _controller = PageController();
     super.initState();
   }
+
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
   }
 
@@ -39,31 +44,32 @@ class _StartQuizState extends State<StartQuiz> {
           if (questions == null || questions.length < 5) {
             return const LessFive();
           } else if (model.showResult) {
-            int score =model.calculateGrade().round();
-            if (score>=75) {
+            int score = model.calculateGrade().round();
+            if (score >= 75) {
               return ResultBody(
                 title: 'Congratulations!',
                 imagePath: 'images/result.jpg',
-                result: '${score~/10} / 10',
+                result: '${score ~/ 10} / 10',
                 description: 'You are superstar!',
               );
-            } else if (score>=50) {
-              return  ResultBody(
+            } else if (score >= 50) {
+              return ResultBody(
                 title: 'Congratulations!',
                 imagePath: 'images/result.jpg',
-                result: '${score~/10} / 10',
+                result: '${score ~/ 10} / 10',
                 description: 'Keep up the good work!',
               );
             } else {
               return ResultBody(
                 title: 'Oops!',
                 imagePath: 'images/fail.png',
-                result: '${score~/10} / 10',
+                result: '${score ~/ 10} / 10',
                 description: 'Sorry, better luck next time!',
               );
             }
           } else {
             return PageView.builder(
+              controller: _controller,
               itemCount: questions.length,
               itemBuilder: (BuildContext context, int qIndex) {
                 Question q = questions[qIndex];
@@ -74,20 +80,20 @@ class _StartQuizState extends State<StartQuiz> {
                     padding: const EdgeInsets.all(10),
                     children: [
                       HeaderWidget(
-                        qIndex: qIndex, questionCount: questions.length,),
+                        qIndex: qIndex,
+                        questionCount: questions.length,
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
                       QuestionTitle(q: q),
                       AnswerList(
-                        model: model, qIndex: qIndex, answers: q.answers,),
-                      qIndex == questions.length - 1
-                          ? PrimaryButton(
-                          onTap: () {
-                            model.setShowResult(true);
-                          },
-                          title: 'Show result')
-                          : const SizedBox()
+                        controller: _controller,
+                        model: model,
+                        qIndex: qIndex,
+                        answers: q.answers,
+                        isLast: qIndex == questions.length - 1,
+                      ),
                     ],
                   ),
                 );
@@ -103,7 +109,8 @@ class _StartQuizState extends State<StartQuiz> {
 class HeaderWidget extends StatelessWidget {
   const HeaderWidget({
     super.key,
-    required this.qIndex, required this.questionCount,
+    required this.qIndex,
+    required this.questionCount,
   });
 
   final int questionCount;
@@ -164,12 +171,18 @@ class QuestionTitle extends StatelessWidget {
 class AnswerList extends StatelessWidget {
   const AnswerList({
     super.key,
-    required this.model, required this.qIndex, required this.answers,
+    required this.model,
+    required this.qIndex,
+    required this.answers,
+    required this.controller,
+    required this.isLast,
   });
 
   final QuestionProvider model;
   final int qIndex;
   final List<String> answers;
+  final PageController controller;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +199,11 @@ class AnswerList extends StatelessWidget {
             splashColor: AppColor.primary.withOpacity(0.2),
             onTap: () {
               model.setAnswer(qIndex, index);
+              isLast
+                  ? model.setShowResult(true)
+                  : controller.animateToPage(qIndex + 1,
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.easeOut);
             },
             child: AnswerItem(
               answer: answer,

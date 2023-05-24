@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quize/controller/question_provider.dart';
 import 'package:quize/quiz.dart';
-import 'package:quize/quiz2.dart';
 import 'package:quize/screens/home_page.dart';
 import 'package:quize/shared/colors.dart';
 
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Quiz App',
       theme: ThemeData(primarySwatch: AppColor.primary as MaterialColor),
-      home: const Quize(),
+      home: const HomePage(),
     );
   }
 }
