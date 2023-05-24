@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:quize/controller/question_provider.dart';
 import 'package:quize/screens/start_quiz.dart';
@@ -43,24 +44,26 @@ class HomeDrawer extends StatelessWidget {
                     MaterialPageRoute(builder: (_) => const CreateQuiz()));
               },
             ),
-            Consumer<QuestionProvider>(
-              builder: (context, model,child) {
-                return ListTile(
-                  leading: Icon(Icons.quiz),
-                  title: Text('Start Quiz'),
-                  onTap: () {
-                    model.answersIndex=List.generate(model.questions?.length??0, (index) => null);
-                    model.setShowResult(false);
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) =>  const StartQuiz()));
-                  },
-                );
-              }
-            ),
+            Consumer<QuestionProvider>(builder: (context, model, child) {
+              return ListTile(
+                leading: Icon(Icons.quiz),
+                title: Text('Start Quiz'),
+                onTap: () {
+                  model.answersIndex = List.generate(
+                      model.questions?.length ?? 0, (index) => null);
+                  model.setShowResult(false);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const StartQuiz()));
+                },
+              );
+            }),
             const Divider(),
-            const ListTile(
-              leading: Icon(Icons.exit_to_app_outlined),
-              title: Text('Exit'),
+            ListTile(
+              leading: const Icon(Icons.exit_to_app_outlined),
+              title: const Text('Exit'),
+              onTap: () {
+                SystemNavigator.pop();
+              },
             ),
           ],
         ),
